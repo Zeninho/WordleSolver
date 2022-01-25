@@ -1,0 +1,77 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+with open('5letterb.txt', 'r') as file:
+    text = file.read()
+    results=[]
+    listw=text.split()
+
+    for repetition in np.arange(100):
+        
+        list5a=[]
+        for ww in listw:
+            l=len(''.join(set(ww)))
+            if l==5:
+                list5a.append(ww)
+            else:
+                list5a=list5a
+                
+        seed=random.choice(listw)
+        ii=0
+        for ro,f in enumerate(np.arange(15)):
+            ListN=[]
+            if ro==0:
+                start=random.choice(list5a)
+            else:
+                start=random.choice(list5)
+            res=[]
+            for i,a in enumerate(start):
+                pos=seed.find(a)
+                if pos != -1:
+                    if pos==i:
+                        res.append("T")
+                    else:
+                        res.append("W")
+                else:
+                    res.append("E")
+
+            if ro==0:
+                lista=listw
+            else:
+                lista=list5
+            for w in lista:
+                Cond=True
+                for j,b in enumerate(start):
+                    if res[j]=='T':
+                        if w[j]==b:
+                            Cond=Cond*True
+                        else:
+                            Cond=Cond*False
+                    if res[j]=='W':
+                        if w.find(start[j])==-1:
+                            Cond=Cond*False
+                        if w.find(start[j])!=-1 and w.find(start[j])!=j:
+                            Cond=Cond*True
+                        else:
+                            Cond=Cond*False
+
+                    if res[j]=='E' :
+                        if w.find(start[j])!=-1:
+                            Cond=Cond*False #Superhardmode
+                            #Cond=Cond*True #lettere sbagliate non eliminate
+                        else:
+                            Cond=Cond*True
+                if Cond==True:
+                    ListN.append(w)
+                    
+            ii=ii+1
+            #print(ii)
+            if np.shape(ListN)[0]==1:
+                results.append(ii)
+                break
+            list5=ListN       
+    #print(results)
+    
+plt.hist(results,bins=np.max(results)-np.min(results)+1)
+np.average(results)
